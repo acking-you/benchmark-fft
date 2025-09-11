@@ -60,17 +60,24 @@ class BenchResult:
             "average": stats.mean(self.times_ms),
         }
 
-def run_cmd(cmd: List[str], cwd: Optional[Path] = None, verbose: bool = False) -> subprocess.CompletedProcess:
+def run_cmd(cmd: List[str], cwd: Optional[Path] = None, verbose: bool = False, env: Optional[dict] = None) -> subprocess.CompletedProcess:
     workdir = str(cwd) if cwd else None
     if verbose:
         prefix = f"[CMD in {workdir}] " if workdir else "[CMD] "
         print(prefix + " ".join(map(str, cmd)), file=sys.stderr)
     return subprocess.run(
-        cmd, cwd=workdir, capture_output=True, text=True, check=False
+        cmd, cwd=workdir, capture_output=True, text=True, check=False, env=env
     )
 
 def ensure_built(program: Program, verbose: bool) -> None:
-    proc = run_cmd(program.build_cmd, cwd=program.workdir, verbose=verbose)
+    # Add RUSTFLAGS for native CPU optimization if building Rust
+    env = None
+    if program.name == "rust":
+        import os
+        env = os.environ.copy()
+        env["RUSTFLAGS"] = "-C target-cpu=native"
+    
+    proc = run_cmd(program.build_cmd, cwd=program.workdir, verbose=verbose, env=env)
     if proc.returncode != 0:
         print(f"[ERROR] Build failed for {program.name}.", file=sys.stderr)
         print("Command:", " ".join(program.build_cmd), file=sys.stderr)
