@@ -1,6 +1,9 @@
 use fft::{fft, Complex};
 use std::f64::consts::PI;
 
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
 fn round(n: f64) -> f64 {
     // precision = 2
     (n * 100.0).round() / 100.0

@@ -208,8 +208,14 @@ def main():
         build_cmd=["go", "build", "-o", "bin/main", "."],
         exe_path=Path("bin") / "main",
     )
+    cpp = Program(
+        name="cpp",
+        workdir=repo_root / "fft" / "cpp",
+        build_cmd=["sh", "-c", "cmake -B build -DCMAKE_BUILD_TYPE=Release . && cmake --build build"],
+        exe_path=Path("build") / "bin" / "main",
+    )
 
-    programs = [rust, mbt, swift, go]  # build & run order
+    programs = [rust, mbt, swift, go, cpp]  # build & run order
 
     # Build
     if not args.no_build:
