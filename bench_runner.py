@@ -75,7 +75,8 @@ def ensure_built(program: Program, verbose: bool) -> None:
     if program.name == "rust":
         import os
         env = os.environ.copy()
-        env["RUSTFLAGS"] = "-C target-cpu=native"
+        # Add fast math optimizations similar to -ffast-math (corrected LLVM args format)
+        env["RUSTFLAGS"] = "-C target-cpu=native -C llvm-args=--ffast-math -C opt-level=3"
     
     proc = run_cmd(program.build_cmd, cwd=program.workdir, verbose=verbose, env=env)
     if proc.returncode != 0:
@@ -211,7 +212,7 @@ def main():
     cpp = Program(
         name="cpp",
         workdir=repo_root / "fft" / "cpp",
-        build_cmd=["sh", "-c", "cmake -B build -DCMAKE_BUILD_TYPE=Release . && cmake --build build"],
+        build_cmd=["sh", "-c", "cmake --preset=vcpkg && cmake --build --preset=vcpkg"],
         exe_path=Path("build") / "bin" / "main",
     )
 

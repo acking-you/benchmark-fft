@@ -8,6 +8,9 @@
 #include <cmath>
 #include <numbers>
 
+// Enable mimalloc as global allocator
+#include <mimalloc-override.h>
+
 constexpr double round_precision(double n) {
     return std::round(n * 100.0) / 100.0;
 }

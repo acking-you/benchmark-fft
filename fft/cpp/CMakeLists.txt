@@ -6,11 +6,16 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+find_package(mimalloc CONFIG REQUIRED)
+
 # Enable native CPU optimizations
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -march=native -mtune=native -DNDEBUG")
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -march=native -mtune=native -DNDEBUG")
 
 # Add executable
 add_executable(main src/main.cpp)
+
+# Use mimalloc
+target_link_libraries(main PRIVATE $<IF:$<TARGET_EXISTS:mimalloc-static>,mimalloc-static,mimalloc>)
 
 # Set output directory
 set_target_properties(main PROPERTIES

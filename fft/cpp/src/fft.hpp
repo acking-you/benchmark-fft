@@ -30,13 +30,16 @@ private:
         std::vector<Complex> a0, a1;
         a0.reserve(n / 2);
         a1.reserve(n / 2);
-        
-        // Use ranges with stride to get even/odd elements
-        auto even_indices = std::views::iota(0uz, n) | std::views::filter([](size_t i) { return i % 2 == 0; });
-        auto odd_indices = std::views::iota(0uz, n) | std::views::filter([](size_t i) { return i % 2 == 1; });
-        
-        std::ranges::transform(even_indices, std::back_inserter(a0), [&arr](size_t i) { return arr[i]; });
-        std::ranges::transform(odd_indices, std::back_inserter(a1), [&arr](size_t i) { return arr[i]; });
+
+        for (int i = 0; i < n; i += 2)
+        {
+            a0.emplace_back(arr[i]);
+        }
+
+        for (int i = 1; i < n; i += 2)
+        {
+            a1.emplace_back(arr[i]);
+        }
         
         _fft(a0);
         _fft(a1);
