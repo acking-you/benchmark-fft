@@ -13,3 +13,10 @@ path = "src/lib.rs"
 [[bin]]
 name = "main"
 path = "src/main.rs"
+
+[profile.release]
+lto = true           # Enable Link Time Optimization (equivalent to -flto)
+opt-level = 3        # Maximum optimization level
+codegen-units = 1    # Single codegen unit for better optimization
+panic = "abort"      # Reduce binary size
+strip = true         # Strip debug symbols

@@ -76,7 +76,8 @@ def ensure_built(program: Program, verbose: bool) -> None:
         import os
         env = os.environ.copy()
         # Add fast math optimizations similar to -ffast-math (corrected LLVM args format)
-        env["RUSTFLAGS"] = "-C target-cpu=native -C llvm-args=--ffast-math -C opt-level=3"
+        # -C llvm-args=-unroll-runtime -C llvm-args=-unroll-threshold=1000 enables loop unrolling
+        env["RUSTFLAGS"] = "-C target-cpu=native -C llvm-args=--ffast-math -C opt-level=3 -C llvm-args=-unroll-runtime -C llvm-args=-unroll-threshold=1000"
     
     proc = run_cmd(program.build_cmd, cwd=program.workdir, verbose=verbose, env=env)
     if proc.returncode != 0:

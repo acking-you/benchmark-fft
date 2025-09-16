@@ -8,8 +8,9 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(mimalloc CONFIG REQUIRED)
 
-# Enable native CPU optimizations
-set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -march=native -mtune=native -DNDEBUG")
+# Enable native CPU optimizations with loop unrolling and LTO
+set(CMAKE_CXX_FLAGS_RELEASE "-O3 -ffast-math -march=native -mtune=native -funroll-loops -flto -DNDEBUG")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "-flto")  # Enable LTO for linking
 
 # Add executable
 add_executable(main src/main.cpp)
